@@ -31,8 +31,8 @@ sudo pacman -S highlight
 
 ## TODO
 
-* add screenshots
-* try to have just one awk command
-* env vars to config file name color
-* try to have dynamic box draw char lenght or use env var for lenght
+- [ ] add screenshots
+- [x] try to have just one awk command
+- [ ] env vars to config file name color
+- [ ] try to have dynamic box draw char lenght or use env var for lenght
 
