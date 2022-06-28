@@ -1,4 +1,19 @@
 #!/bin/sh
+echo () { printf %s\\n "$*" ; }
+check_cmd(){
+    if command -v "$1" >/dev/null; then
+        echo "$1"
+    fi
+}
+
+[ -z "$HIGHLIGHTER" ] && HIGHLIGHTER="$(check_cmd highlight)"
+[ -z "$HIGHLIGHTER" ] && HIGHLIGHTER="$(check_cmd source-highlight)"
+[ -z "$HIGHLIGHTER" ] && { echo "dependencies unmet, install a highlighter program or set the env var HIGHLIGHTER"; exit 1; }
+case "$HIGHLIGHTER" in
+    *source-highlight) HIGHLIGHTER="${HIGHLIGHTER} -f esc -i" ;;
+    *highlight) HIGHLIGHTER="${HIGHLIGHTER} -O ansi --force" ;;
+esac
+
 awkcmd() {
 awk -v file="$*" '
     BEGIN { print  "\x1b[30;1m───────┬────────────────────────────────────────────────────────────────────────\x1b[0m" };
@@ -12,5 +27,5 @@ awk -v file="$*" '
 if [ "$#" -gt 1 ]; then
     /bin/cat "$@" | awkcmd "$@"
 else
-    highlight -O ansi --force "$1" | awkcmd "$@"
+    $HIGHLIGHTER "$1" | awkcmd "$@"
 fi

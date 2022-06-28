@@ -16,16 +16,24 @@ i'm not installing all the rust deps when i can just wrap some stuff i got insta
 
 ## usage
 
-just run make to install or uninstall, all this depends on is awk ( bsd awk should work ), a shell interpreter and the [highlight](http://www.andre-simon.de/doku/highlight/highlight.php) program.
+just run make to install or uninstall, all this depends on is awk ( bsd awk should work ), a shell interpreter and a highlighter program like [highlight](http://www.andre-simon.de/doku/highlight/highlight.php) or [source-highlight](https://www.gnu.org/software/src-highlite/), alternatively you can provide your own highlighter command with the `HIGHLIGHTER` env var
 
 in debian and derivates just run:
 ```sh 
 sudo apt install highlight
 ```
+or
+```sh 
+sudo apt install source-highlight
+```
 
 in arch and derivates:
 ```sh
 sudo pacman -S highlight
+```
+or 
+```sh
+sudo pacman -S source-highlight
 ```
 
 
