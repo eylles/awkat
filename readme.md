@@ -11,7 +11,7 @@ somewhat of a bat in awk
 
 ## why ?
 
-i'm not installing all the rust deps when i can just wrap some stuff i got installed already in a script
+i'm not installing all the rust deps when i can just wrap some stuff i got installed already in a script /s
 
 
 ## usage
@@ -41,6 +41,6 @@ sudo pacman -S source-highlight
 
 - [ ] add screenshots
 - [x] try to have just one awk command
-- [ ] env vars to config file name color
-- [ ] try to have dynamic box draw char lenght or use env var for lenght
+- [ ] env vars to config file name color (doing some tests it seems this one aint doable)
+- [x] try to have dynamic box draw char lenght or use env var for lenght (AWKAT_COLS)
 
