@@ -1,24 +1,17 @@
 #!/bin/sh
-echo () { printf %s\\n "$*" ; }
 check_cmd(){
-    if command -v "$1" >/dev/null; then
-        echo "$1"
-    fi
+    [ "$(command -v "$1" 2>/dev/null)" ] && printf '%s\n' "$1"
 }
 
 [ -z "$HIGHLIGHTER" ] && HIGHLIGHTER="$(check_cmd highlight)"
 [ -z "$HIGHLIGHTER" ] && HIGHLIGHTER="$(check_cmd source-highlight)"
-[ -z "$HIGHLIGHTER" ] && { echo "dependencies unmet, install a highlighter program or set the env var HIGHLIGHTER"; exit 1; }
+[ -z "$HIGHLIGHTER" ] && { printf '%s\n' "dependencies unmet, install a highlighter program or set the env var HIGHLIGHTER"; exit 1; }
 case "$HIGHLIGHTER" in
     *source-highlight) HIGHLIGHTER="${HIGHLIGHTER} -f esc -i" ;;
     *highlight) HIGHLIGHTER="${HIGHLIGHTER} -O ansi --force" ;;
 esac
 
-if [ -z "$AWKAT_COLS" ]; then
-    clnms="$(tput cols)"
-else
-    clnms="$AWKAT_COLS"
-fi
+[ -z "$AWKAT_COLS" ] && { clnms="$(tput cols)"; } || { clnms="$AWKAT_COLS"; }
 
 awkcmd() {
     awk -v file="$*" -v Col="$clnms" '
