@@ -24,11 +24,11 @@ while getopts "c:" opt; do case "${opt}" in
         if is_num "$OPTARG"; then
             clnms="$OPTARG"
         else
-            printf 'argument for %s: "%s" is not a number\n' "$opt" "$OPTARG" >&2
+            printf 'awkat-name: argument for -%s "%s" is not a number\n' "$opt" "$OPTARG" >&2
             exit 1
         fi
     ;;
-    *) printf 'invalid option %s\n' "$opt" >&2 ; exit 1 ;;
+    *) printf 'awkat-name: invalid option %s\n' "$opt" >&2 ; exit 1 ;;
 esac done
 shift $(( OPTIND -1 ))
 

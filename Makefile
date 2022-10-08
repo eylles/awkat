@@ -4,7 +4,7 @@ PREFIX = ~/.local
 NAME = bat
 
 $(NAME):
-	cp awkat.sh $(NAME)
+	sed "s/awkat-name/$(NAME)/" awkat.sh > $(NAME)
 
 install: $(NAME)
 	chmod 755 $(NAME)
