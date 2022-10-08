@@ -28,7 +28,7 @@ while getopts "c:" opt; do case "${opt}" in
             exit 1
         fi
     ;;
-    *) printf 'invalid option %s\n' $opt >&2 ; exit 1 ;;
+    *) printf 'invalid option %s\n' "$opt" >&2 ; exit 1 ;;
 esac done
 shift $(( OPTIND -1 ))
 
