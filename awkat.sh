@@ -14,6 +14,8 @@ esac
 
 [ -z "$AWKAT_COLS" ] && { clnms="$(tput cols)"; } || { clnms="$AWKAT_COLS"; }
 
+crop=$(( clnms - 9 ))
+
 awkcmd() {
     awk -v file="$*" -v Col="$clnms" '
     BEGIN { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┬"; for(c=0;c<Col-8;c++) printf"─"; print"\033[0m" }
@@ -25,7 +27,7 @@ awkcmd() {
 }
 
 if [ "$#" -gt 1 ]; then
-    /bin/cat "$@" | awkcmd "$@"
+    /bin/cat "$@" | colrm "$crop" | awkcmd "$@"
 else
-    $HIGHLIGHTER "$1" | awkcmd "$@"
+    colrm "$crop" < "$1" | $HIGHLIGHTER | awkcmd "$@"
 fi
