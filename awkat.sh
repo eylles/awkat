@@ -3,9 +3,10 @@ check_cmd(){
     [ "$(command -v "$1" 2>/dev/null)" ] && printf '%s\n' "$1"
 }
 
+no_hl_err="no HIGHLIGHTER found, install a highlighter program or set the env var HIGHLIGHTER"
 [ -z "$HIGHLIGHTER" ] && HIGHLIGHTER="$(check_cmd highlight)"
 [ -z "$HIGHLIGHTER" ] && HIGHLIGHTER="$(check_cmd source-highlight)"
-[ -z "$HIGHLIGHTER" ] && { printf '%s\n' "dependencies unmet, install a highlighter program or set the env var HIGHLIGHTER"; exit 1; }
+[ -z "$HIGHLIGHTER" ] && { printf '%s\n' "$no_hl_err" >&2 ; exit 1; }
 case "$HIGHLIGHTER" in
     *source-highlight) HIGHLIGHTER="${HIGHLIGHTER} -f esc -i" ;;
     *highlight) HIGHLIGHTER="${HIGHLIGHTER} -O ansi --force" ;;
