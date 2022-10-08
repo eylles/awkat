@@ -36,11 +36,14 @@ crop=$(( clnms - 9 ))
 
 awkcmd() {
     awk -v file="$*" -v Col="$clnms" '
-    BEGIN { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┬"; for(c=0;c<Col-8;c++) printf"─"; print"\033[0m" }
+    BEGIN { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┬";
+            for(c=0;c<Col-8;c++) printf"─"; print"\033[0m" }
     BEGIN { printf "\x1b[30;1m%6s │\x1b[0m \x1b[32;1m %s \x1b[0m \n", "file", file };
-    BEGIN { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┼"; for(c=0;c<Col-8;c++) printf"─"; print"\033[0m" }
+    BEGIN { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┼";
+            for(c=0;c<Col-8;c++) printf"─"; print"\033[0m" }
           { printf "\x1b[30;1m%6d │\x1b[0m %s\n", NR, $0 };
-    END { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┴"; for(c=0;c<Col-8;c++) printf"─"; print"\033[0m" }
+    END   { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┴";
+            for(c=0;c<Col-8;c++) printf"─"; print"\033[0m" }
     '
 }
 
