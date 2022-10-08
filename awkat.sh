@@ -44,8 +44,30 @@ awkcmd() {
     '
 }
 
-if [ "$#" -gt 1 ]; then
-    /bin/cat "$@" | colrm "$crop" | awkcmd "$@"
+tmpfile="${TMPDIR:-/tmp}/awkat-name_pipe_$$"
+trap 'rm -f -- $tmpfile' EXIT
+
+if [ "$#" -eq 0 ]; then
+    if [ -t 0 ]; then
+        echo "awkat-name: No FILE arguments provided" >&2; exit 1
+    else
+        # Consume stdin and put it in the temporal file
+        cat > "$tmpfile"
+        pipearg=1
+    fi
+fi
+
+for arg in "$@"; do
+    # if it's a pipe then drain it to $tmpfile
+    [ -p "$arg" ] && { pipearg=1; cat "$arg" > "$tmpfile"; };
+done
+
+if [ -z "$pipearg" ]; then
+    if [ "$#" -gt 1 ]; then
+        /bin/cat "$@" | colrm "$crop" | awkcmd "$@"
+    else
+        colrm "$crop" < "$1" | $HIGHLIGHTER | awkcmd "$@"
+    fi
 else
-    colrm "$crop" < "$1" | $HIGHLIGHTER | awkcmd "$@"
+    colrm "$crop" < "$tmpfile" | $HIGHLIGHTER | awkcmd "awkat-name-pipe $$"
 fi
