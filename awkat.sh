@@ -66,8 +66,8 @@ if [ -z "$pipearg" ]; then
     if [ "$#" -gt 1 ]; then
         /bin/cat "$@" | colrm "$crop" | awkcmd "$@"
     else
-        colrm "$crop" < "$1" | $HIGHLIGHTER | awkcmd "$@"
+        $HIGHLIGHTER "$1" | colrm "$crop" | awkcmd "$@"
     fi
 else
-    colrm "$crop" < "$tmpfile" | $HIGHLIGHTER | awkcmd "awkat-name-pipe $$"
+    $HIGHLIGHTER "$tmpfile" | colrm "$crop" | awkcmd "awkat-name-pipe $$"
 fi
