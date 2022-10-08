@@ -2,7 +2,7 @@
 
 somewhat of a bat in awk
 
-<img src="./screenshot" width="400">
+<img src="./screenshot.png" width="400">
 
 <p align="center">
 <a href="https://github.com/eylles/awkat" alt="GitHub"><img src="https://img.shields.io/badge/Github-2B3137?style=for-the-badge&logo=Github&logoColor=FFFFFF"></a>
