@@ -2,6 +2,7 @@
 
 somewhat of a bat in awk
 
+<img src="./screenshot" width="400">
 
 <p align="center">
 <a href="https://github.com/eylles/awkat" alt="GitHub"><img src="https://img.shields.io/badge/Github-2B3137?style=for-the-badge&logo=Github&logoColor=FFFFFF"></a>
@@ -39,7 +40,7 @@ sudo pacman -S source-highlight
 
 ## TODO
 
-- [ ] add screenshots
+- [x] add screenshots
 - [x] try to have just one awk command
 - [ ] env vars to config file name color (doing some tests it seems this one aint doable)
 - [x] try to have dynamic box draw char lenght or use env var for lenght (AWKAT_COLS)
