@@ -14,6 +14,24 @@ esac
 
 [ -z "$AWKAT_COLS" ] && { clnms="$(tput cols)"; } || { clnms="$AWKAT_COLS"; }
 
+is_num() {
+    # usage: is_num "value"
+    printf %d "$1" >/dev/null 2>&1
+}
+
+while getopts "c:" opt; do case "${opt}" in
+    c)
+        if is_num "$OPTARG"; then
+            clnms="$OPTARG"
+        else
+            printf 'argument for %s: "%s" is not a number\n' "$opt" "$OPTARG" >&2
+            exit 1
+        fi
+    ;;
+    *) printf 'invalid option %s\n' $opt >&2 ; exit 1 ;;
+esac done
+shift $(( OPTIND -1 ))
+
 crop=$(( clnms - 9 ))
 
 awkcmd() {
