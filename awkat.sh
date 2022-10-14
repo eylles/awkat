@@ -20,7 +20,12 @@ is_num() {
     printf %d "$1" >/dev/null 2>&1
 }
 
-while getopts "c:" opt; do case "${opt}" in
+trim_iden() {
+    # usage: trim_iden "value"
+    printf '%.6s\n' "$1"
+}
+
+while getopts "c:I:" opt; do case "${opt}" in
     c)
         if is_num "$OPTARG"; then
             clnms=$(( OPTARG -margin ))
@@ -29,15 +34,18 @@ while getopts "c:" opt; do case "${opt}" in
             exit 1
         fi
     ;;
+    I) ident=$(trim_iden "$OPTARG") ;;
     *) printf '%s: invalid option %s\n' "${0##*/}" "$opt" >&2 ; exit 1 ;;
 esac done
 shift $(( OPTIND -1 ))
 
 awkcmd() {
-    awk -v file="$*" -v Col="$clnms" '
+    iD="$1"
+    shift 1
+    awk -v iden="$iD" -v file="$*" -v Col="$clnms" '
     BEGIN { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┬";
             for(c=0;c<Col+1;c++) printf"─"; print"\033[0m" }
-    BEGIN { printf "\x1b[30;1m%6s │\x1b[0m \x1b[32;1m %s \x1b[0m \n", "file", file };
+    BEGIN { printf "\x1b[30;1m%6s │\x1b[0m \x1b[32;1m %s \x1b[0m \n", iden, file };
     BEGIN { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┼";
             for(c=0;c<Col+1;c++) printf"─"; print"\033[0m" }
           { printf "\x1b[30;1m%6d │\x1b[0m %s\n", NR, $0 };
@@ -66,10 +74,13 @@ done
 
 if [ -z "$pipearg" ]; then
     if [ "$#" -gt 1 ]; then
-        /bin/cat "$@" | colrm "$clnms" | awkcmd "$@"
+        [ -z "$ident" ] && ident="File"
+        /bin/cat "$@" | colrm "$clnms" | awkcmd "$ident" "$@"
     else
-        $HIGHLIGHTER "$1" | colrm "$clnms" | awkcmd "$@"
+        [ -z "$ident" ] && ident="File"
+        $HIGHLIGHTER "$1" | colrm "$clnms" | awkcmd "$ident" "$@"
     fi
 else
-    $HIGHLIGHTER "$tmpfile" | colrm "$clnms" | awkcmd "${0##*/}-pipe $$"
+    [ -z "$ident" ] && ident="Pipe"
+    $HIGHLIGHTER "$tmpfile" | colrm "$clnms" | awkcmd "$ident" "${0##*/}-pipe $$"
 fi
