@@ -12,7 +12,8 @@ case "$HIGHLIGHTER" in
     *highlight) HIGHLIGHTER="${HIGHLIGHTER} -O ansi --force" ;;
 esac
 
-[ -z "$AWKAT_COLS" ] && { clnms="$(tput cols)"; } || { clnms="$AWKAT_COLS"; }
+margin=9 #the columns on the left of the printable area
+[ -z "$AWKAT_COLS" ] && { clnms=$(( $(tput cols) -margin )); } || { clnms=$(( AWKAT_COLS -margin )); }
 
 is_num() {
     # usage: is_num "value"
@@ -22,7 +23,7 @@ is_num() {
 while getopts "c:" opt; do case "${opt}" in
     c)
         if is_num "$OPTARG"; then
-            clnms="$OPTARG"
+            clnms=$(( OPTARG -margin ))
         else
             printf '%s: argument for -%s "%s" is not a number\n' "${0##*/}" "$opt" "$OPTARG" >&2
             exit 1
@@ -32,18 +33,16 @@ while getopts "c:" opt; do case "${opt}" in
 esac done
 shift $(( OPTIND -1 ))
 
-crop=$(( clnms - 9 ))
-
 awkcmd() {
     awk -v file="$*" -v Col="$clnms" '
     BEGIN { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┬";
-            for(c=0;c<Col-8;c++) printf"─"; print"\033[0m" }
+            for(c=0;c<Col+1;c++) printf"─"; print"\033[0m" }
     BEGIN { printf "\x1b[30;1m%6s │\x1b[0m \x1b[32;1m %s \x1b[0m \n", "file", file };
     BEGIN { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┼";
-            for(c=0;c<Col-8;c++) printf"─"; print"\033[0m" }
+            for(c=0;c<Col+1;c++) printf"─"; print"\033[0m" }
           { printf "\x1b[30;1m%6d │\x1b[0m %s\n", NR, $0 };
     END   { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┴";
-            for(c=0;c<Col-8;c++) printf"─"; print"\033[0m" }
+            for(c=0;c<Col+1;c++) printf"─"; print"\033[0m" }
     '
 }
 
@@ -67,10 +66,10 @@ done
 
 if [ -z "$pipearg" ]; then
     if [ "$#" -gt 1 ]; then
-        /bin/cat "$@" | colrm "$crop" | awkcmd "$@"
+        /bin/cat "$@" | colrm "$clnms" | awkcmd "$@"
     else
-        $HIGHLIGHTER "$1" | colrm "$crop" | awkcmd "$@"
+        $HIGHLIGHTER "$1" | colrm "$clnms" | awkcmd "$@"
     fi
 else
-    $HIGHLIGHTER "$tmpfile" | colrm "$crop" | awkcmd "${0##*/}-pipe $$"
+    $HIGHLIGHTER "$tmpfile" | colrm "$clnms" | awkcmd "${0##*/}-pipe $$"
 fi
