@@ -24,11 +24,11 @@ while getopts "c:" opt; do case "${opt}" in
         if is_num "$OPTARG"; then
             clnms="$OPTARG"
         else
-            printf 'awkat-name: argument for -%s "%s" is not a number\n' "$opt" "$OPTARG" >&2
+            printf '%s: argument for -%s "%s" is not a number\n' "${0##*/}" "$opt" "$OPTARG" >&2
             exit 1
         fi
     ;;
-    *) printf 'awkat-name: invalid option %s\n' "$opt" >&2 ; exit 1 ;;
+    *) printf '%s: invalid option %s\n' "${0##*/}" "$opt" >&2 ; exit 1 ;;
 esac done
 shift $(( OPTIND -1 ))
 
@@ -47,12 +47,12 @@ awkcmd() {
     '
 }
 
-tmpfile="${TMPDIR:-/tmp}/awkat-name_pipe_$$"
+tmpfile="${TMPDIR:-/tmp}/${0##*/}_pipe_$$"
 trap 'rm -f -- $tmpfile' EXIT
 
 if [ "$#" -eq 0 ]; then
     if [ -t 0 ]; then
-        echo "awkat-name: No FILE arguments provided" >&2; exit 1
+        echo "${0##*/}: No FILE arguments provided" >&2; exit 1
     else
         # Consume stdin and put it in the temporal file
         cat > "$tmpfile"
@@ -72,5 +72,5 @@ if [ -z "$pipearg" ]; then
         $HIGHLIGHTER "$1" | colrm "$crop" | awkcmd "$@"
     fi
 else
-    $HIGHLIGHTER "$tmpfile" | colrm "$crop" | awkcmd "awkat-name-pipe $$"
+    $HIGHLIGHTER "$tmpfile" | colrm "$crop" | awkcmd "${0##*/}-pipe $$"
 fi
