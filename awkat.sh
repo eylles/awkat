@@ -27,7 +27,7 @@ trim_iden() {
     printf '%.6s\n' "$1"
 }
 
-while getopts "c:I:" opt; do case "${opt}" in
+while getopts "c:I:f" opt; do case "${opt}" in
     c)
         if is_num "$OPTARG"; then
             clnms=$(( OPTARG -margin ))
@@ -37,6 +37,7 @@ while getopts "c:I:" opt; do case "${opt}" in
         fi
     ;;
     I) ident=$(trim_iden "$OPTARG") ;;
+    f) Folding=1 ;;
     *) printf '%s: invalid option %s\n' "${0##*/}" "$opt" >&2 ; exit 1 ;;
 esac done
 shift $(( OPTIND -1 ))
@@ -74,15 +75,21 @@ for arg in "$@"; do
     [ -p "$arg" ] && { pipearg=1; cat "$arg" > "$tmpfile"; };
 done
 
+if [ -z "$Folding" ]; then
+    constrainer='colrm'
+else
+    constrainer='fold -s -w'
+fi
+
 if [ -z "$pipearg" ]; then
     if [ "$#" -gt 1 ]; then
         [ -z "$ident" ] && ident="File"
-        /bin/cat "$@" | colrm "$clnms" | awkcmd "$ident" "$@"
+        /bin/cat "$@" | $constrainer "$clnms" | awkcmd "$ident" "$@"
     else
         [ -z "$ident" ] && ident="File"
-        $HIGHLIGHTER "$1" | colrm "$clnms" | awkcmd "$ident" "$@"
+        $HIGHLIGHTER "$1" | $constrainer "$clnms" | awkcmd "$ident" "$@"
     fi
 else
     [ -z "$ident" ] && ident="Pipe"
-    $HIGHLIGHTER "$tmpfile" | colrm "$clnms" | awkcmd "$ident" "${0##*/}-pipe $$"
+    $HIGHLIGHTER "$tmpfile" | $constrainer "$clnms" | awkcmd "$ident" "${0##*/}-pipe $$"
 fi
