@@ -13,6 +13,8 @@ case "$HIGHLIGHTER" in
 esac
 
 margin=9 #the columns on the left of the printable area
+# if ran as a preview for fzf use the fzf previe columns
+[ -z "$FZF_PREVIEW_COLUMNS" ] || AWKAT_COLS="$FZF_PREVIEW_COLUMNS"
 [ -z "$AWKAT_COLS" ] && { clnms=$(( $(tput cols) -margin )); } || { clnms=$(( AWKAT_COLS -margin )); }
 
 is_num() {
