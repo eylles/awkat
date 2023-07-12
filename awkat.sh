@@ -1,4 +1,7 @@
 #!/bin/sh
+
+# usage: check_cmd command
+#     returns the command if it exists
 check_cmd(){
     [ "$(command -v "$1" 2>/dev/null)" ] && printf '%s\n' "$1"
 }
@@ -12,18 +15,21 @@ case "$HIGHLIGHTER" in
     *highlight) HIGHLIGHTER="${HIGHLIGHTER} -O ansi --force" ;;
 esac
 
-margin=9 #the columns on the left of the printable area
+#the columns on the left of the printable area
+margin=9
+
 # if ran as a preview for fzf use the fzf previe columns
 [ -z "$FZF_PREVIEW_COLUMNS" ] || AWKAT_COLS="$FZF_PREVIEW_COLUMNS"
 [ -z "$AWKAT_COLS" ] && { clnms=$(( $(tput cols) -margin )); } || { clnms=$(( AWKAT_COLS -margin )); }
 
+# usage: is_num "value"
 is_num() {
-    # usage: is_num "value"
     printf %d "$1" >/dev/null 2>&1
 }
 
+# usage: trim_iden "value"
+#     will trim input to 6 chars
 trim_iden() {
-    # usage: trim_iden "value"
     printf '%.6s\n' "$1"
 }
 
@@ -75,6 +81,10 @@ for arg in "$@"; do
     [ -p "$arg" ] && { pipearg=1; cat "$arg" > "$tmpfile"; };
 done
 
+# constraining method: one of 2 according to -f option
+#     default remove: colrm
+#     -f      fold:   fold -s -w
+constrainer=""
 if [ -z "$Folding" ]; then
     constrainer='colrm'
 else
