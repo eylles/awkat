@@ -33,7 +33,11 @@ trim_iden() {
     printf '%.6s\n' "$1"
 }
 
-while getopts "c:I:f" opt; do case "${opt}" in
+_help () {
+    printf 'usage: %s [OPTION] [FILE]\n' "${0##*/}"
+}
+
+while getopts "c:I:fh" opt; do case "${opt}" in
     c)
         if is_num "$OPTARG"; then
             clnms=$(( OPTARG -margin ))
@@ -44,6 +48,7 @@ while getopts "c:I:f" opt; do case "${opt}" in
     ;;
     I) ident=$(trim_iden "$OPTARG") ;;
     f) Folding=1 ;;
+    h) _help ; exit 0 ;;
     *) printf '%s: invalid option %s\n' "${0##*/}" "$opt" >&2 ; exit 1 ;;
 esac done
 shift $(( OPTIND -1 ))
