@@ -1,5 +1,7 @@
 #!/bin/sh
 
+myname=${0##*/}
+
 # usage: check_cmd command
 #     returns the command if it exists
 check_cmd(){
@@ -33,8 +35,8 @@ trim_iden() {
     printf '%.6s\n' "$1"
 }
 
-_help () {
-    printf 'usage: %s [OPTION] [FILE]\n' "${0##*/}"
+show_help () {
+    printf 'usage: %s [OPTION] [FILE]\n' "${myname}"
 }
 
 while getopts "c:I:fh" opt; do case "${opt}" in
@@ -42,14 +44,14 @@ while getopts "c:I:fh" opt; do case "${opt}" in
         if is_num "$OPTARG"; then
             clnms=$(( OPTARG - margin ))
         else
-            printf '%s: argument for -%s "%s" is not a number\n' "${0##*/}" "$opt" "$OPTARG" >&2
+            printf '%s: argument for -%s "%s" is not a number\n' "${myname}" "$opt" "$OPTARG" >&2
             exit 1
         fi
     ;;
     I) ident=$(trim_iden "$OPTARG") ;;
     f) Folding=1 ;;
-    h) _help ; exit 0 ;;
-    *) printf '%s: invalid option %s\n' "${0##*/}" "$opt" >&2 ; exit 1 ;;
+    h) show_help ; exit 0 ;;
+    *) printf '%s: invalid option %s\n' "${myname}" "$opt" >&2 ; exit 1 ;;
 esac done
 shift $(( OPTIND -1 ))
 
@@ -68,12 +70,12 @@ awkcmd() {
     '
 }
 
-tmpfile="${TMPDIR:-/tmp}/${0##*/}_pipe_$$"
+tmpfile="${TMPDIR:-/tmp}/${myname}_pipe_$$"
 trap 'rm -f -- $tmpfile' EXIT
 
 if [ "$#" -eq 0 ]; then
     if [ -t 0 ]; then
-        echo "${0##*/}: No FILE arguments provided" >&2; exit 1
+        echo "${myname}: No FILE arguments provided" >&2; exit 1
     else
         # Consume stdin and put it in the temporal file
         cat > "$tmpfile"
@@ -106,5 +108,5 @@ if [ -z "$pipearg" ]; then
     fi
 else
     [ -z "$ident" ] && ident="Pipe"
-    $HIGHLIGHTER "$tmpfile" | $constrainer "$clnms" | awkcmd "$ident" "${0##*/}-pipe $$"
+    $HIGHLIGHTER "$tmpfile" | $constrainer "$clnms" | awkcmd "$ident" "${myname}-pipe $$"
 fi
