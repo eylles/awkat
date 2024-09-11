@@ -20,7 +20,7 @@ margin=9
 
 # if ran as a preview for fzf use the fzf previe columns
 [ -z "$FZF_PREVIEW_COLUMNS" ] || AWKAT_COLS="$FZF_PREVIEW_COLUMNS"
-[ -z "$AWKAT_COLS" ] && { clnms=$(( $(tput cols) -margin )); } || { clnms=$(( AWKAT_COLS -margin )); }
+[ -z "$AWKAT_COLS" ] && { clnms=$(( $(tput cols) - margin )); } || { clnms=$(( AWKAT_COLS - margin )); }
 
 # usage: is_num "value"
 is_num() {
@@ -40,7 +40,7 @@ _help () {
 while getopts "c:I:fh" opt; do case "${opt}" in
     c)
         if is_num "$OPTARG"; then
-            clnms=$(( OPTARG -margin ))
+            clnms=$(( OPTARG - margin ))
         else
             printf '%s: argument for -%s "%s" is not a number\n' "${0##*/}" "$opt" "$OPTARG" >&2
             exit 1
