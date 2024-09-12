@@ -35,8 +35,29 @@ trim_iden() {
     printf '%.6s\n' "$1"
 }
 
-show_help () {
+show_usage () {
     printf 'usage: %s [OPTION] [FILE]\n' "${myname}"
+}
+
+show_help () {
+  printf '%s\n'   "${myname}: bat imitation with minimal dependencies"
+  show_usage
+  printf '\n%s\n' "Options:"
+  printf '%s\n'   "-I S"
+  printf '\t%s\n' "where 'S' is the identifier string."
+  printf '%s\n'   "-f"
+  printf '\t%s\n' "use folding instead of colrm to constrain displayed columns."
+  printf '%s\n'   "-c N"
+  printf '\t%s\n' "where 'N' is the column width of the display area."
+  printf '\t%s\n' "if not provided tput cols will be used to determine the display area"
+  printf '\t%s\n' "when called from fzf the \$FZF_PREVIEW_COLUMNS variable is used instead."
+  printf '%s\n'   "-h"
+  printf '\t%s\n' "show this message"
+  printf '\n%s\n' "Hihghlighting:"
+  printf '\t%s\n' "by default the script will try to use either 'highlight' or 'source-highlight'"
+  printf '\t%s\n' "to use a different highlighter you have to set or export the \$HIGHLIGHTER"
+  printf '\t%s\n' "variable with your code highlighter of choice and the necessary flags so that it"
+  printf '\t%s\n' "will output in ANSI escape sequences."
 }
 
 while getopts "c:I:fh" opt; do case "${opt}" in
@@ -51,7 +72,11 @@ while getopts "c:I:fh" opt; do case "${opt}" in
     I) ident=$(trim_iden "$OPTARG") ;;
     f) Folding=1 ;;
     h) show_help ; exit 0 ;;
-    *) printf '%s: invalid option %s\n' "${myname}" "$opt" >&2 ; exit 1 ;;
+    *)
+        printf '%s: invalid option %s\n' "${myname}" "$opt" >&2
+        show_usage
+        exit 1
+        ;;
 esac done
 shift $(( OPTIND -1 ))
 
