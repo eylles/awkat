@@ -45,8 +45,6 @@ show_help () {
   printf '\n%s\n' "Options:"
   printf '%s\n'   "-I S"
   printf '\t%s\n' "where 'S' is the identifier string."
-  printf '%s\n'   "-f"
-  printf '\t%s\n' "use folding instead of colrm to constrain displayed columns."
   printf '%s\n'   "-c N"
   printf '\t%s\n' "where 'N' is the column width of the display area."
   printf '\t%s\n' "if not provided tput cols will be used to determine the display area"
@@ -60,7 +58,7 @@ show_help () {
   printf '\t%s\n' "will output in ANSI escape sequences."
 }
 
-while getopts "c:I:fh" opt; do case "${opt}" in
+while getopts "c:I:h" opt; do case "${opt}" in
     c)
         if is_num "$OPTARG"; then
             clnms=$(( OPTARG - margin ))
@@ -70,7 +68,6 @@ while getopts "c:I:fh" opt; do case "${opt}" in
         fi
     ;;
     I) ident=$(trim_iden "$OPTARG") ;;
-    f) Folding=1 ;;
     h) show_help ; exit 0 ;;
     *)
         printf '%s: invalid option %s\n' "${myname}" "$opt" >&2
@@ -113,25 +110,15 @@ for arg in "$@"; do
     [ -p "$arg" ] && { pipearg=1; cat "$arg" > "$tmpfile"; };
 done
 
-# constraining method: one of 2 according to -f option
-#     default remove: colrm
-#     -f      fold:   fold -s -w
-constrainer=""
-if [ -z "$Folding" ]; then
-    constrainer='colrm'
-else
-    constrainer='fold -s -w'
-fi
-
 if [ -z "$pipearg" ]; then
     if [ "$#" -gt 1 ]; then
         [ -z "$ident" ] && ident="File"
-        /bin/cat "$@" | $constrainer "$clnms" | awkcmd "$ident" "$@"
+        /bin/cat "$@" | fold -s -w "$clnms" | awkcmd "$ident" "$@"
     else
         [ -z "$ident" ] && ident="File"
-        $HIGHLIGHTER "$1" | $constrainer "$clnms" | awkcmd "$ident" "$@"
+        fold -s -w "$clnms" "$1" | $HIGHLIGHTER | awkcmd "$ident" "$@"
     fi
 else
     [ -z "$ident" ] && ident="Pipe"
-    $HIGHLIGHTER "$tmpfile" | $constrainer "$clnms" | awkcmd "$ident" "${myname}-pipe $$"
+    fold -s -w "$clnms" "$tmpfile" | $HIGHLIGHTER | awkcmd "$ident" "${myname}-pipe $$"
 fi
