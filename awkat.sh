@@ -120,6 +120,11 @@ if [ -z "$pipearg" ]; then
         /bin/cat "$@" | fold -s -w "$clnms" | awkcmd "$ident" "$@"
     else
         [ -z "$ident" ] && ident="File"
+        case "$HIGHLIGHTER" in
+            *highlight*)
+                HIGHLIGHTER="${HIGHLIGHTER} --syntax-by-name $1"
+                ;;
+        esac
         fold -s -w "$clnms" "$1" | $HIGHLIGHTER | awkcmd "$ident" "$@"
     fi
 else
