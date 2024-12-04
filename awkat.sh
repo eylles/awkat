@@ -22,7 +22,11 @@ margin=9
 
 # if ran as a preview for fzf use the fzf previe columns
 [ -z "$FZF_PREVIEW_COLUMNS" ] || AWKAT_COLS="$FZF_PREVIEW_COLUMNS"
-[ -z "$AWKAT_COLS" ] && { clnms=$(( $(tput cols) - margin )); } || { clnms=$(( AWKAT_COLS - margin )); }
+if [ -z "$AWKAT_COLS" ]; then
+    clnms=$(( $(tput cols) - margin ))
+else
+    clnms=$(( AWKAT_COLS - margin ))
+fi
 
 # usage: is_num "value"
 is_num() {
