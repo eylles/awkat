@@ -125,7 +125,14 @@ if [ -z "$pipearg" ]; then
                 HIGHLIGHTER="${HIGHLIGHTER} --syntax-by-name $1"
                 ;;
         esac
-        fold -s -w "$clnms" "$1" | $HIGHLIGHTER | awkcmd "$ident" "$@"
+        case "$1" in
+            *.gz|*.zst|*.zip|*.tar|*.doc|*.deb|*.jar|*.7z)
+                lesspipe "$1" | fold -s -w "$clnms" | awkcmd "$ident" "$@"
+                ;;
+            *)
+                fold -s -w "$clnms" "$1" | $HIGHLIGHTER | awkcmd "$ident" "$@"
+                ;;
+        esac
     fi
 else
     [ -z "$ident" ] && ident="Pipe"
