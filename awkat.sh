@@ -130,7 +130,17 @@ if [ -z "$pipearg" ]; then
                 lesspipe "$1" | fold -s -w "$clnms" | awkcmd "$ident" "$@"
                 ;;
             *)
-                fold -s -w "$clnms" "$1" | $HIGHLIGHTER | awkcmd "$ident" "$@"
+                if [ -d "$1" ]; then
+                    if [ -z "$FZF_PREVIEW_LINES" ]; then
+                        rows=$(tput lines)
+                    else
+                        rows="$FZF_PREVIEW_LINES"
+                    fi
+                    rows=$(( rows - 4))
+                    tree "$1" | head -n "$rows" | fold -s -w "$clnms" | awkcmd "$ident" "$@"
+                else
+                    fold -s -w "$clnms" "$1" | $HIGHLIGHTER | awkcmd "$ident" "$@"
+                fi
                 ;;
         esac
     fi
