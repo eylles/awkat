@@ -55,6 +55,8 @@ show_help () {
   printf '\n%s\n' "Options:"
   printf '%s\n'   "-I S"
   printf '\t%s\n' "where 'S' is the identifier string."
+  printf '%s\n'   "-N S"
+  printf '\t%s\n' "where 'S' is the file name string."
   printf '%s\n'   "-c N"
   printf '\t%s\n' "where 'N' is the column width of the display area."
   printf '\t%s\n' "if not provided tput cols will be used to determine the display area"
@@ -68,7 +70,7 @@ show_help () {
   printf '\t%s\n' "will output in ANSI escape sequences."
 }
 
-while getopts "c:I:h" opt; do case "${opt}" in
+while getopts "c:I:N:h" opt; do case "${opt}" in
     c)
         if is_num "$OPTARG"; then
             clnms=$(( OPTARG - margin ))
@@ -78,6 +80,7 @@ while getopts "c:I:h" opt; do case "${opt}" in
         fi
     ;;
     I) ident=$(trim_iden "$OPTARG") ;;
+    N) name="$OPTARG" ;;
     h) show_help ; exit 0 ;;
     *)
         printf '%s: invalid option %s\n' "${myname}" "$opt" >&2
@@ -153,5 +156,6 @@ if [ -z "$pipearg" ]; then
     fi
 else
     [ -z "$ident" ] && ident="Pipe"
-    fold -s -w "$clnms" "$tmpfile" | $HIGHLIGHTER | awkcmd "$ident" "${myname}-pipe $$"
+    [ -z "$name" ] && name="${myname}-pipe $$"
+    fold -s -w "$clnms" "$tmpfile" | $HIGHLIGHTER | awkcmd "$ident" "$name"
 fi
