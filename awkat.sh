@@ -63,6 +63,8 @@ show_help () {
   printf '\t%s\n' "when called from fzf the \$FZF_PREVIEW_COLUMNS variable is used instead."
   printf '%s\n'   "-H"
   printf '\t%s\n' "do not print header"
+  printf '%s\n'   "-B"
+  printf '\t%s\n' "do not print top and bottom borders nor header"
   printf '%s\n'   "-h"
   printf '\t%s\n' "show this message"
   printf '\n%s\n' "Hihghlighting:"
@@ -75,7 +77,8 @@ show_help () {
 ident=""
 name=""
 noheader=""
-while getopts "c:I:N:hH" opt; do case "${opt}" in
+noborder=""
+while getopts "c:I:N:hHB" opt; do case "${opt}" in
     c)
         if is_num "$OPTARG"; then
             clnms=$(( OPTARG - margin ))
@@ -87,6 +90,7 @@ while getopts "c:I:N:hH" opt; do case "${opt}" in
     I) ident=$(trim_iden "$OPTARG") ;;
     N) name="$OPTARG" ;;
     H) noheader=1 ;;
+    B) noborder=1 ;;
     h) show_help ; exit 0 ;;
     *)
         printf '%s: invalid option %s\n' "${myname}" "$opt" >&2
@@ -100,7 +104,7 @@ awkcmd() {
     iD="$1"
     shift 1
     # header
-    if [ -z "$noheader" ]; then
+    if [ -z "$noheader" ] && [ -z "$noborder" ]; then
         awk -v iden="$iD" -v file="$*" -v Col="$clnms" '
         BEGIN { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┬";
                 for(c=0;c<Col+1;c++) printf"─"; print"\033[0m" }
@@ -108,12 +112,12 @@ awkcmd() {
         '
     fi
     # f top 
-    if [ -z "$noheader" ]; then
+    if [ -z "$noheader" ] && [ -z "$noborder" ]; then
         awk -v Col="$clnms" '
         BEGIN { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┼";
                 for(c=0;c<Col+1;c++) printf"─"; print"\033[0m" }
         '
-    else
+    elif [ -z "$noborder" ]; then
         awk -v Col="$clnms" '
         BEGIN { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┬";
                 for(c=0;c<Col+1;c++) printf"─"; print"\033[0m" }
@@ -124,10 +128,12 @@ awkcmd() {
           { printf "\x1b[30;1m%6d │\x1b[0m %s\n", NR, $0 };
     '
     # f bot
-    awk -v Col="$clnms" '
-    END   { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┴";
-            for(c=0;c<Col+1;c++) printf"─"; print"\033[0m" }
-    '
+    if [ -z "$noborder" ]; then
+        awk -v Col="$clnms" '
+        END   { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┴";
+                for(c=0;c<Col+1;c++) printf"─"; print"\033[0m" }
+        '
+    fi
 }
 
 tmpfile="${TMPDIR:-/tmp}/${myname}_pipe_$$"
