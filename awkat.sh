@@ -50,28 +50,30 @@ show_usage () {
 }
 
 show_help () {
-  printf '%s\n'   "${myname}: bat imitation with minimal dependencies"
-  show_usage
-  printf '\n%s\n' "Options:"
-  printf '%s\n'   "-I S"
-  printf '\t%s\n' "where 'S' is the identifier string."
-  printf '%s\n'   "-N S"
-  printf '\t%s\n' "where 'S' is the file name string."
-  printf '%s\n'   "-c N"
-  printf '\t%s\n' "where 'N' is the column width of the display area."
-  printf '\t%s\n' "if not provided tput cols will be used to determine the display area"
-  printf '\t%s\n' "when called from fzf the \$FZF_PREVIEW_COLUMNS variable is used instead."
-  printf '%s\n'   "-H"
-  printf '\t%s\n' "do not print header"
-  printf '%s\n'   "-B"
-  printf '\t%s\n' "do not print top and bottom borders nor header"
-  printf '%s\n'   "-h"
-  printf '\t%s\n' "show this message"
-  printf '\n%s\n' "Hihghlighting:"
-  printf '\t%s\n' "by default the script will try to use either 'highlight' or 'source-highlight'"
-  printf '\t%s\n' "to use a different highlighter you have to set or export the \$HIGHLIGHTER"
-  printf '\t%s\n' "variable with your code highlighter of choice and the necessary flags so that it"
-  printf '\t%s\n' "will output in ANSI escape sequences."
+    printf '%s\n'   "${myname}: bat imitation with minimal dependencies"
+    show_usage
+    printf '\n%s\n'   "Options:"
+    printf '%s\n'     "-I S"
+    printf '\t%s\n'   "where 'S' is the identifier string."
+    printf '%s\n'     "-N S"
+    printf '\t%s\n'   "where 'S' is the file name string."
+    printf '%s\n'     "-c N"
+    printf '\t%s\n'   "where 'N' is the column width of the display area."
+    printf '\t%s\n'   "if not provided tput cols will be used to determine the display area"
+    printf '\t%s\n'   "when called from fzf the \$FZF_PREVIEW_COLUMNS variable is used instead."
+    printf '%s\n'     "-H"
+    printf '\t%s\n'   "do not print header"
+    printf '%s\n'     "-B"
+    printf '\t%s\n'   "do not print top and bottom borders nor header"
+    printf '%s\n'     "-h"
+    printf '\t%s\n'   "show this message"
+    printf '\n%s\n'   "Hihghlighting:"
+    printf '\t%s%s\n' "by default the script will try to use either 'highlight'" \
+                      " or 'source-highlight'"
+    printf '\t%s\n'   "to use a different highlighter you have to set or export the \$HIGHLIGHTER"
+    printf '\t%s%s\n' "variable with your code highlighter of choice and the necessary flags" \
+                      " so that it"
+    printf '\t%s\n'   "will output in ANSI escape sequences."
 }
 
 ident=""
@@ -111,7 +113,7 @@ awkcmd() {
         BEGIN { printf "\x1b[30;1m%6s │\x1b[0m \x1b[32;1m %s \x1b[0m \n", iden, file };
         '
     fi
-    # f top 
+    # f top
     if [ -z "$noheader" ] && [ -z "$noborder" ]; then
         awk -v Col="$clnms" '
         BEGIN { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┼";
