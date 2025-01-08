@@ -98,7 +98,7 @@ while getopts "c:I:N:hHB" opt; do case "${opt}" in
         printf '%s: invalid option %s\n' "${myname}" "$opt" >&2
         show_usage
         exit 1
-        ;;
+    ;;
 esac done
 shift $(( OPTIND -1 ))
 
@@ -165,12 +165,12 @@ if [ -z "$pipearg" ]; then
         case "$HIGHLIGHTER" in
             *highlight*)
                 HIGHLIGHTER="${HIGHLIGHTER} --syntax-by-name $1"
-                ;;
+            ;;
         esac
         case "$1" in
             *.gz|*.zst|*.zip|*.tar|*.doc|*.deb|*.jar|*.7z)
                 lesspipe "$1" | fold -s -w "$clnms" | awkcmd "$ident" "$@"
-                ;;
+            ;;
             *)
                 if [ -d "$1" ]; then
                     if [ -z "$FZF_PREVIEW_LINES" ]; then
@@ -184,7 +184,7 @@ if [ -z "$pipearg" ]; then
                 else
                     fold -s -w "$clnms" "$1" | $HIGHLIGHTER | awkcmd "$ident" "$@"
                 fi
-                ;;
+            ;;
         esac
     fi
 else
