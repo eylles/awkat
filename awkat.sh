@@ -17,6 +17,24 @@ case "$HIGHLIGHTER" in
     *highlight) HIGHLIGHTER="${HIGHLIGHTER} -O ansi --force" ;;
 esac
 
+# werether or not a pipe is being drained
+pipearg=""
+
+hi_li () {
+    if [ -z "$pipearg" ]; then
+        case "$HIGHLIGHTER" in
+            *highlight*)
+                ${HIGHLIGHTER} --syntax-by-name "$@"
+            ;;
+            *)
+                ${HIGHLIGHTER}
+            ;;
+        esac
+    else
+        ${HIGHLIGHTER}
+    fi
+}
+
 #the columns on the left of the printable area
 margin=9
 
@@ -162,11 +180,6 @@ if [ -z "$pipearg" ]; then
         /bin/cat "$@" | fold -s -w "$clnms" | awkcmd "$ident" "$@"
     else
         [ -z "$ident" ] && ident="File"
-        case "$HIGHLIGHTER" in
-            *highlight*)
-                HIGHLIGHTER="${HIGHLIGHTER} --syntax-by-name $1"
-            ;;
-        esac
         case "$1" in
             *.gz|*.zst|*.zip|*.tar|*.doc|*.deb|*.jar|*.7z)
                 lesspipe "$1" | fold -s -w "$clnms" | awkcmd "$ident" "$@"
@@ -182,7 +195,7 @@ if [ -z "$pipearg" ]; then
                         wtree "$1" | head -n "$rows" | fold -s -w "$clnms" | awkcmd "$ident" "$@"
                     fi
                 else
-                    fold -s -w "$clnms" "$1" | $HIGHLIGHTER | awkcmd "$ident" "$@"
+                    fold -s -w "$clnms" "$1" | hi_li "$@" | awkcmd "$ident" "$@"
                 fi
             ;;
         esac
@@ -190,5 +203,5 @@ if [ -z "$pipearg" ]; then
 else
     [ -z "$ident" ] && ident="Pipe"
     [ -z "$name" ] && name="${myname}-pipe $$"
-    fold -s -w "$clnms" "$tmpfile" | $HIGHLIGHTER | awkcmd "$ident" "$name"
+    fold -s -w "$clnms" "$tmpfile" | hi_li | awkcmd "$ident" "$name"
 fi
