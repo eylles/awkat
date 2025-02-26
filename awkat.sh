@@ -24,7 +24,14 @@ hi_li () {
     if [ -z "$pipearg" ]; then
         case "$HIGHLIGHTER" in
             *highlight*)
-                ${HIGHLIGHTER} --syntax-by-name "$@"
+                file="${1##*/}"
+                ext="${file##*\.}"
+                # only do syntax by name if the file name got a real extension
+                if [ "$ext" != "$file" ]; then
+                    ${HIGHLIGHTER} --syntax-by-name "$file"
+                else
+                    ${HIGHLIGHTER}
+                fi
             ;;
             *)
                 ${HIGHLIGHTER}
