@@ -24,7 +24,11 @@ hi_li () {
     if [ -z "$pipearg" ]; then
         case "$HIGHLIGHTER" in
             *highlight*)
-                file="${1##*/}"
+                # we may be reading a symlink, the symlink may not have an
+                # extension but the real file it points to could so we try
+                # to get that file name
+                file=$(readlink -f "$1")
+                file="${file##*/}"
                 ext="${file##*\.}"
                 # only do syntax by name if the file name got a real extension
                 if [ "$ext" != "$file" ]; then
