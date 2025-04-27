@@ -20,6 +20,9 @@ esac
 # werether or not a pipe is being drained
 pipearg=""
 
+# usage: cat "file" | hi_li [file name]
+# highlighter wrapper
+# receives file from std in, can get file name as arg
 hi_li () {
     if [ -z "$pipearg" ]; then
         case "$HIGHLIGHTER" in
@@ -46,7 +49,7 @@ hi_li () {
     fi
 }
 
-#the columns on the left of the printable area
+# the columns on the left of the printable area
 margin=9
 
 # if ran as a preview for fzf use the fzf previe columns
