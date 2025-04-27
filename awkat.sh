@@ -145,7 +145,7 @@ awkcmd() {
         BEGIN { printf "\x1b[30;1m%6s │\x1b[0m \x1b[32;1m %s \x1b[0m \n", iden, file };
         '
     fi
-    # f top
+    # frame top
     if [ -z "$noheader" ] && [ -z "$noborder" ]; then
         awk -v Col="$clnms" '
         BEGIN { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┼";
@@ -161,7 +161,7 @@ awkcmd() {
     awk '
           { printf "\x1b[30;1m%6d │\x1b[0m %s\n", NR, $0 };
     '
-    # f bot
+    # frame bot
     if [ -z "$noborder" ]; then
         awk -v Col="$clnms" '
         END   { printf "\033[30;1m"; for(c=0;c<7;c++) printf"─"; printf"┴";
