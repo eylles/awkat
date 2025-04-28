@@ -189,11 +189,10 @@ for arg in "$@"; do
 done
 
 if [ -z "$pipearg" ]; then
+    [ -z "$ident" ] && ident="File"
     if [ "$#" -gt 1 ]; then
-        [ -z "$ident" ] && ident="File"
         /bin/cat "$@" | fold -s -w "$clnms" | awkcmd "$ident" "$@"
     else
-        [ -z "$ident" ] && ident="File"
         case "$1" in
             *.gz|*.zst|*.zip|*.tar|*.doc|*.deb|*.jar|*.7z)
                 lesspipe "$1" | fold -s -w "$clnms" | awkcmd "$ident" "$@"
