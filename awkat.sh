@@ -178,14 +178,14 @@ if [ "$#" -eq 0 ]; then
         echo "${myname}: No FILE arguments provided" >&2; exit 1
     else
         # Consume stdin and put it in the temporal file
-        cat > "$tmpfile"
+        /bin/cat > "$tmpfile"
         pipearg=1
     fi
 fi
 
 for arg in "$@"; do
     # if it's a pipe then drain it to $tmpfile
-    [ -p "$arg" ] && { pipearg=1; cat "$arg" > "$tmpfile"; };
+    [ -p "$arg" ] && { pipearg=1; /bin/cat "$arg" > "$tmpfile"; };
 done
 
 if [ -z "$pipearg" ]; then
