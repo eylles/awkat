@@ -205,7 +205,7 @@ if [ -z "$pipearg" ]; then
                     else
                         rows="$FZF_PREVIEW_LINES"
                         rows=$(( rows - 4))
-                        wtree "$1" | head -n "$rows" | fold -s -w "$clnms" | awkcmd "$ident" "$@"
+                        wtree "$1" | fold -s -w "$clnms" | head -n "$rows" | awkcmd "$ident" "$@"
                     fi
                 else
                     fold -s -w "$clnms" "$1" | hi_li "$@" | awkcmd "$ident" "$@"
